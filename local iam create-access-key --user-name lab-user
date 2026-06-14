@@ -1,0 +1,18 @@
+{
+    "Users": [
+        {
+            "Path": "/",
+            "UserName": "lab-user",
+            "UserId": "507rwkr8wnmfj2lr70sk",
+            "Arn": "arn:aws:iam::000000000000:user/lab-user",
+            "CreateDate": "2026-06-11T23:39:49.179000+00:00"
+        }
+    ],
+    "Group": {
+        "Path": "/",
+        "GroupName": "bigdata-read",
+        "GroupId": "cdxl313rci67s8mprclt",
+        "Arn": "arn:aws:iam::000000000000:group/bigdata-read",
+        "CreateDate": "2026-06-11T23:32:51.598000+00:00"
+    }
+}

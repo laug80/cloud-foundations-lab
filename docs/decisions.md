@@ -61,3 +61,25 @@ Tradeoff: depende de conectividad y de los free-tier hours disponibles (60 hs/me
 Con Docker local se trabaja offline y sin límite de tiempo.
 
 Resultado: Codespaces para las clases, Docker local como fallback documentado en el README.
+##Lab04
+# esto en AWS real bloquearía al usuario — en LocalStack Community pasa igual
+awslocal iam put-user-policy \
+  --user-name lab-user \
+  --policy-name DenyEverything \
+  --policy-document '{"Version":"2012-10-17","Statement":[{"Effect":"Deny","Action":"*","Resource":"*"}]}'
+
+awslocal s3 ls s3://course-data-raw   # en Community: sigue funcionando
+
+### 005 - Identidad y credenciales en el lab
+
+Decision: usar roles con STS en lugar de access keys de larga duración para acceso entre servicios.
+
+Contexto: las access keys no expiran y si se filtran dan acceso indefinido.
+Los roles con STS generan credenciales temporales (15 min a 12 hs) con trazabilidad.
+
+Alternativas: access keys rotadas manualmente, vault/secret manager.
+
+Tradeoff: asumir un rol requiere que el servicio tenga permiso de sts:AssumeRole
+y que el rol tenga un trust policy correcto. Más configuración inicial, menos riesgo.
+
+Resultado: app-role con inline policy de privilegio mínimo sobre course-data-raw.
