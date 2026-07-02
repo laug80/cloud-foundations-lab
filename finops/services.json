@@ -1,0 +1,75 @@
+{
+  "notes": "Servicios del stack del proyecto + uso mensual estimado. Precios referenciales us-east-1. Fuente oficial: https://calculator.aws/",
+  "services": [
+    {
+      "name": "web-tier-ec2",
+      "type": "compute",
+      "unit": "hs",
+      "monthly_usage": 730,
+      "unit_price": 0.0104,
+      "sp_eligible": true,
+      "spot_eligible": false,
+      "notes": "t3.micro corriendo 24/7 (baseline estable — candidato a Savings Plan)"
+    },
+    {
+      "name": "worker-batch",
+      "type": "compute",
+      "unit": "hs",
+      "monthly_usage": 100,
+      "unit_price": 0.0208,
+      "sp_eligible": false,
+      "spot_eligible": true,
+      "notes": "t3.small usado 100hs/mes para jobs — interrumpible, va a Spot"
+    },
+    {
+      "name": "rds-db-t3-micro",
+      "type": "db",
+      "unit": "hs",
+      "monthly_usage": 730,
+      "unit_price": 0.017,
+      "sp_eligible": false,
+      "spot_eligible": false,
+      "notes": "db.t3.micro Single-AZ (dev). En prod: Multi-AZ = 2x"
+    },
+    {
+      "name": "s3-data-lake",
+      "type": "storage",
+      "unit": "GB-mes",
+      "monthly_usage": 100,
+      "unit_price": 0.023,
+      "sp_eligible": false,
+      "spot_eligible": false,
+      "notes": "S3 Standard, 100GB en course-data-lake"
+    },
+    {
+      "name": "s3-requests",
+      "type": "storage",
+      "unit": "k-req",
+      "monthly_usage": 500,
+      "unit_price": 0.0004,
+      "sp_eligible": false,
+      "spot_eligible": false,
+      "notes": "500k requests PUT/COPY/POST/LIST (S3 Standard tier)"
+    },
+    {
+      "name": "nat-gateway",
+      "type": "network",
+      "unit": "hs",
+      "monthly_usage": 730,
+      "unit_price": 0.045,
+      "sp_eligible": false,
+      "spot_eligible": false,
+      "notes": "⚠️ NAT Gateway: uno de los recursos olvidados más caros. Alternativa: VPC endpoints (lab 07)"
+    },
+    {
+      "name": "data-egress",
+      "type": "network",
+      "unit": "GB",
+      "monthly_usage": 50,
+      "unit_price": 0.09,
+      "sp_eligible": false,
+      "spot_eligible": false,
+      "notes": "Egress a Internet. Los primeros 100GB/mes son free en AWS."
+    }
+  ]
+}

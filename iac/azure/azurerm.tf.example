@@ -1,0 +1,43 @@
+# Cómo se vería el mismo lab contra Azure REAL (con provider azurerm).
+# No es ejecutable contra el emulador — para usar, renombrar a azurerm.tf
+# DESPUÉS de quitar el main.tf y proveer credenciales reales (az login).
+#
+# El emulador local cubre data plane (blob CRUD) pero NO Azure Resource Manager.
+# El provider azurerm necesita ARM, por eso este archivo solo tiene sentido
+# en Azure real.
+
+terraform {
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = "~> 3.0"
+    }
+  }
+}
+
+provider "azurerm" {
+  features {}
+}
+
+resource "azurerm_resource_group" "main" {
+  name     = "lab-09-rg"
+  location = "eastus"
+}
+
+resource "azurerm_storage_account" "main" {
+  name                     = "lab09appstg"  # globalmente único, 3-24 lowercase
+  resource_group_name      = azurerm_resource_group.main.name
+  location                 = azurerm_resource_group.main.location
+  account_tier             = "Standard"
+  account_replication_type = "LRS"
+
+  blob_properties {
+    versioning_enabled = true
+  }
+}
+
+resource "azurerm_storage_container" "app" {
+  name                  = "lab-09-app-container"
+  storage_account_name  = azurerm_storage_account.main.name
+  container_access_type = "private"
+}
