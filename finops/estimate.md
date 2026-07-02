@@ -16,19 +16,18 @@ Corré `python3 pricing.py` sobre el ejemplo tal como viene y respondé:
 > _completar con el número del output_
 
 **Q2.** Listá los top 3 servicios por costo, con % del total:
-1. _servicio_ — $__ (__% del total)
-2. _servicio_ — $__ (__% del total)
-3. _servicio_ — $__ (__% del total)
+1. _nat-gateway — $32.85 (53% del total)
+2. _rds-db-t3-micro — $12.41 (20% del total)
+3. _web-tier-ec2 — $7.59 (12% del total)
 
 **Q3.** De esos top 3, ¿cuántos son **compute**? ¿Cuántos son **storage** o **network**?
-> _respuesta_
-
+> _respuesta_ hay 1 compute (web-tier-ec2), 1 db (rds-db-t3-micro) y 1 network (nat-gateway). Ninguno de storage puro quedó en el top.
 **Q4.** Aplicá Savings Plan y Spot: ¿cuánto ahorrás sobre el total?
-> _número_
+> _número_4 Ahorrás $3.73 sobre el total.
 
 **Q5.** ¿La optimización SP + Spot alcanza para entrar en tu budget de {{BUDGET}}?
-> _sí / no_
-
+> _sí / no_si
+No, el costo optimizado ($58.20) todavía excede tu budget.
 ---
 
 ## Desafío 1 — Cambiar la arquitectura, no el descuento
@@ -37,13 +36,13 @@ Corré `python3 pricing.py` sobre el ejemplo tal como viene y respondé:
 
 **Q6.** Editá `services.json`: reemplazá la línea del `nat-gateway` por un **VPC endpoint para S3** (unit_price ~$0.01/hora * 730hs = ~$7.3/mes). Corré `pricing.py` de nuevo.
 
-- Costo mensual total nuevo (optimizado): $___
-- Ahorro vs. el original: $___
-- ¿Ahora entra en el budget? Sí / No
+- Costo mensual total nuevo (optimizado): $___32.65  ( 163% del budget)
+- Ahorro vs. el original: $_ $25.55 (calculado como $58.20 original - $32.65 nuevo)
+- ¿Ahora entra en el budget? Sí / No  No
 
 **Q7.** ¿Qué tipo de tráfico **rompería** esta decisión? (pista: los VPC endpoints Gateway solo sirven para S3 y DynamoDB)
 > _respuesta_
-
+Cualquier tráfico hacia APIs externas, internet público (como npm install o servicios de terceros) u otros servicios de AWS que no sean S3 o DynamoDB.
 ---
 
 ## Desafío 2 — Ajustar a un budget agresivo
@@ -53,15 +52,15 @@ Corré `python3 pricing.py` sobre el ejemplo tal como viene y respondé:
 **Q8.** Diseñá 2 opciones para entrar en $25:
 
 **Opción A — recortar servicios:**
-- Qué sacás:
-- Qué se pierde en producto:
-- Costo final estimado:
+- Qué sacás: El procesador de tareas secundarias (worker-batch) y la mitad de las descargas de datos
+- Qué se pierde en producto: El sistema ya no generará reportes automáticos en segundo plano y los usuarios tendrán un límite más estricto para descargar archivos.
+- Costo final estimado:$ 24.26
 
 **Opción B — cambiar dimensionamiento:**
-- Qué instance class bajás:
-- Qué storage class cambiás (Standard → IA/Glacier):
-- Qué uso mensual reducís:
-- Costo final estimado:
+- Qué instance class bajás: La base de datos
+- Qué storage class cambiás (Standard → IA/Glacier): El almacenamiento de archivos históricos (S3) pasa a una categoría de "baja prioridad".
+- Qué uso mensual reducís:Apagar la base de datos fuera del horario de oficina (usarla solo 12 horas por día en vez de 24/7).
+- Costo final estimado: 21.22
 
 **Q9.** ¿Cuál elegirías y por qué? (una decisión, no las dos)
 > _respuesta_
@@ -73,14 +72,14 @@ Corré `python3 pricing.py` sobre el ejemplo tal como viene y respondé:
 **Contexto:** el proyecto pasó a producción. Requerimientos: Multi-AZ en la DB, 3x el tráfico, 5x el storage en S3, ELB con health checks.
 
 **Q10.** Escribí un `services.production.json` con las siguientes modificaciones sobre el ejemplo:
-- `rds-db-t3-micro`: Multi-AZ (duplicar unit_price a $0.034)
-- `s3-data-lake`: 500 GB
-- `s3-requests`: 1500 k-req
-- `data-egress`: 150 GB
-- Agregar un `alb`: 730 hs * $0.0225/hs + 1 LCU/mes * $0.008/LCU-hs
+- `rds-db-t3-micro`: Multi-AZ (duplicar unit_price a $0.034) ✓
+- `s3-data-lake`: 500 GB ✓
+- `s3-requests`: 1500 k-req ✓
+- `data-egress`: 150 GB ✓
+- Agregar un `alb`: 730 hs * $0.0225/hs + 1 LCU/mes * $0.008/LCU-hs ✓
 
-**Q11.** ¿Qué budget mínimo necesitás para prod? _$__
-**Q12.** ¿Cuánto más caro es prod vs dev? Xn/veces
+**Q11.** ¿Qué budget mínimo necesitás para prod? _$89.66
+**Q12.** ¿Cuánto más caro es prod vs dev? 2.47x (prod $89.66 vs dev $36.38)
 
 ---
 

@@ -1,5 +1,5 @@
 {
-  "notes": "Servicios del stack del proyecto + uso mensual estimado. Precios referenciales us-east-1. Fuente oficial: https://calculator.aws/",
+  "notes": "Servicios del stack en PRODUCCIÓN — escalados para Multi-AZ, 3x tráfico, 5x storage, con ALB",
   "services": [
     {
       "name": "web-tier-ec2",
@@ -26,30 +26,30 @@
       "type": "db",
       "unit": "hs",
       "monthly_usage": 730,
-      "unit_price": 0.017,
+      "unit_price": 0.034,
       "sp_eligible": false,
       "spot_eligible": false,
-      "notes": "db.t3.micro Single-AZ (dev). En prod: Multi-AZ = 2x"
+      "notes": "db.t3.micro Multi-AZ (prod) — unit_price duplicado para HA"
     },
     {
       "name": "s3-data-lake",
       "type": "storage",
       "unit": "GB-mes",
-      "monthly_usage": 100,
+      "monthly_usage": 500,
       "unit_price": 0.023,
       "sp_eligible": false,
       "spot_eligible": false,
-      "notes": "S3 Standard, 100GB en course-data-lake"
+      "notes": "S3 Standard, 500GB (5x) en course-data-lake"
     },
     {
       "name": "s3-requests",
       "type": "storage",
       "unit": "k-req",
-      "monthly_usage": 500,
+      "monthly_usage": 1500,
       "unit_price": 0.0004,
       "sp_eligible": false,
       "spot_eligible": false,
-      "notes": "500k requests PUT/COPY/POST/LIST (S3 Standard tier)"
+      "notes": "1500k requests (3x) PUT/COPY/POST/LIST (S3 Standard tier)"
     },
     {
       "name": "nat-gateway",
@@ -59,17 +59,37 @@
       "unit_price": 0.01,
       "sp_eligible": false,
       "spot_eligible": false,
-      "notes": "⚠️ NAT Gateway: uno de los recursos olvidados más caros. Alternativa: VPC endpoints (lab 07)"
+      "notes": "NAT Gateway 730hs/mes (puede optimizarse con VPC endpoints)"
     },
     {
       "name": "data-egress",
       "type": "network",
       "unit": "GB",
-      "monthly_usage": 50,
+      "monthly_usage": 150,
       "unit_price": 0.09,
       "sp_eligible": false,
       "spot_eligible": false,
-      "notes": "Egress a Internet. Los primeros 100GB/mes son free en AWS."
+      "notes": "Egress a Internet 150GB (3x). Los primeros 100GB/mes son free en AWS."
+    },
+    {
+      "name": "alb",
+      "type": "network",
+      "unit": "hs",
+      "monthly_usage": 730,
+      "unit_price": 0.0225,
+      "sp_eligible": false,
+      "spot_eligible": false,
+      "notes": "Application Load Balancer: 730hs * $0.0225/hs = $16.425"
+    },
+    {
+      "name": "alb-lcu",
+      "type": "network",
+      "unit": "LCU-mes",
+      "monthly_usage": 1,
+      "unit_price": 5.84,
+      "sp_eligible": false,
+      "spot_eligible": false,
+      "notes": "ALB LCU: 1 LCU/mes * $0.008/LCU-hs * 730hs = $5.84"
     }
   ]
 }
